@@ -33,17 +33,17 @@ is_neg_null = is_neg & is_null;
 is_pos_q = ncs_q > 0;
 is_neg_q = ncs_q < 0;
 
-qval = ones(size(ncs_q));
-num = ones(size(ncs_q));
-denom = ones(size(ncs_q));
+qval = nan(size(ncs_q));
+num = nan(size(ncs_q));
+denom = nan(size(ncs_q));
 
-if nnz(is_pos_trt)>2 && nnz(is_pos_null)>2
+if nnz(is_pos_trt) && nnz(is_pos_null)>2
     % positive scores, use the right tail of the distribution
     [qval(is_pos_q), num(is_pos_q), denom(is_pos_q)] = fdr_core(ncs_all(is_pos_trt),...
         ncs_all(is_pos_null),...
         ncs_q(is_pos_q), true, apply_null_adjust, apply_smooth);
 end
-if nnz(is_neg_trt)>2 && nnz(is_neg_null)>2
+if nnz(is_neg_trt) && nnz(is_neg_null)>2
     % negative scores, use the left tail
     [qval(is_neg_q), num(is_neg_q), denom(is_neg_q)] = fdr_core(ncs_all(is_neg_trt),...
         ncs_all(is_neg_null),...
@@ -54,15 +54,21 @@ end
 
 function [qval, num, denom] = fdr_core(x_trt, x_null, xq, use_right_tail, apply_null_adjust, apply_smooth)
 
-% distributions of treatment and null scores
-[f_trt, v_trt] = cdfcalc(x_trt);
-[f_null, v_null] = cdfcalc(x_null);
-
-% lookup quantiles of xq in both distributions
 interp_method = 'pchip';
-trt_quantile = interp1(v_trt, f_trt(1:end-1),...
-    clip(xq, min(v_trt), max(v_trt)),...
-    interp_method);
+
+% distributions of treatment scores
+if length(x_trt)>1
+    [f_trt, v_trt] = cdfcalc(x_trt);
+    % lookup quantiles of xq in both distributions
+    trt_quantile = interp1(v_trt, f_trt(1:end-1),...
+        clip(xq, min(v_trt), max(v_trt)),...
+        interp_method);
+else    
+    trt_quantile = 1;
+end
+
+% distributions of null scores
+[f_null, v_null] = cdfcalc(x_null);
 null_quantile = interp1(v_null, f_null(1:end-1),...
     clip(xq, min(v_null), max(v_null)),...
     interp_method);

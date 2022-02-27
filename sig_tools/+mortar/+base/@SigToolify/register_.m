@@ -32,7 +32,8 @@ end
 if ~isempty(opt.ToolName)
     prop = parse_jenkins_prop(obj.inventory_file);
     if isfield(prop, 'sig_tool_list')
-        prop.sig_tool_list = union(prop.sig_tool_list, opt.ToolName);
+        prop.sig_tool_list = union(prop.sig_tool_list, opt.ToolName,...
+            'stable');
     else
         prop.sig_tool_list = opt.ToolName;
     end

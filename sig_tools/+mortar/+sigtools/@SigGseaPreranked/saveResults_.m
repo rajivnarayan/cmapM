@@ -5,9 +5,11 @@ args = obj.getArgs;
 res = obj.getResults; 
 assert(has_required_fields(res, required_fields), 'Some required fields not found');
 
+gct_writer = ifelse(args.use_gctx, @mkgctx, @mkgct);
+
 % Save results as matrices
 dbg(1, 'Saving query result matrices');
-saveMatrices(res, out_path);
+saveMatrices(res, out_path, gct_writer);
 
 % save digest folders
 if args.save_digests
@@ -16,7 +18,7 @@ if args.save_digests
 end
 end
 
-function matrix_out = saveMatrices(res, out_path)
+function matrix_out = saveMatrices(res, out_path, gct_writer)
 %% save results as matrices
 % cs.gctx: raw connectivity scores
 % ncs.gctx: normalized score
@@ -26,11 +28,10 @@ matrix_out = fullfile(out_path, 'matrices');
 mkdirnotexist(matrix_out)
 mortar.compute.Connectivity.saveResult(res.query_result,...
     matrix_out, 'save_minimal', true, 'appenddim', false);
-mkgctx(fullfile(matrix_out, 'nes.gctx'), res.nes_result, 'appenddim', false);
-mkgctx(fullfile(matrix_out, 'fdr_qvalue.gctx'), res.fdr_result, 'appenddim', false);
+gct_writer(fullfile(matrix_out, 'nes.gct'), res.nes_result, 'appenddim', false);
+gct_writer(fullfile(matrix_out, 'fdr_qvalue.gct'), res.fdr_result, 'appenddim', false);
 
 end
-
 
 function saveResultsPerQuery(res, out_path)
 % save annotated GCT files for each query with ncs, cs and qvalues

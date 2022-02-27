@@ -6,33 +6,21 @@ args = obj.getArgs;
 
 assert(is_ds_or_file(args.score), 'Score not specified');
 if isempty(args.rank)
-    dbg(1, '!!! Rank file not specified, calculating ranks from scores. Use --rank to save time')
-    args.score = parse_gctx(args.score, 'detect_numeric', false);
+    dbg(1, '# Rank file not specified, calculating ranks from scores. Use --rank to save time and specify custom ranks')
+    args.score = parse_gctx(args.score, 'detect_numeric', false, 'has_missing_data', true);
     args.rank = score2rank(args.score);
 else
-    assert(is_ds_or_file(args.rank), 'Rank not specified');
+    assert(is_ds_or_file(args.rank), 'Specified Rank not found');
     dbg(args.verbose, '# Using pre-computed ranks')
 end
 
 %assert(is_struct_or_file(args.sig_meta), 'Signature metadata not specified');
+assert(is_gset_or_file(args.up), 'Up geneset expected');
 
-% Either genesets or query results must be provided
-if isequal(args.es_tail, 'both')
-    assert((is_gset_or_file(args.up) && is_gset_or_file(args.down)),...
-        'Both genesets expected');
-elseif isequal(args.es_tail, 'up')
-    assert(is_gset_or_file(args.up),...
-        'Up geneset expected');
-else
-    assert(is_gset_or_file(args.down),...
-        'Down geneset expected');    
-end
+args.up = parse_geneset(args.up);
+args.up = setfilter(args.up, args.score.rid, args.min_set_size, args.max_set_size);
 
-% % ncs grouping variable 
-% if ~isempty(args.ncs_group)
-%     ncs_group = tokenize(args.ncs_group, ',', true);
-%     obj.setArg('ncs_group', ncs_group);
-% end
+assert(~isempty(args.up), 'Up geneset after filtering is empty');
 
 % Update args
 obj.setArgs(args);

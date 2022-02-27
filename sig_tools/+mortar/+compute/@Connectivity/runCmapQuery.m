@@ -258,12 +258,14 @@ switch(lower(es_tail))
     case 'up'
         upind = tag2idx({uptag.entry}, rid_dict);
         dnind = {};
-        query_id = regexprep({uptag.head}', '_UP$', '', 'ignorecase');
+        %query_id = regexprep({uptag.head}', '_UP$', '', 'ignorecase');
+        query_id = {uptag.head}';
         query_desc = {uptag.desc}';
     case 'down'
         upind = {};
         dnind = tag2idx({dntag.entry}, rid_dict);
-        query_id = regexprep({dntag.head}', '_DN$', '', 'ignorecase');
+        %query_id = regexprep({dntag.head}', '_DN$', '', 'ignorecase');
+        query_id = {dntag.head}';
         query_desc = {dntag.desc}';
 end
 end

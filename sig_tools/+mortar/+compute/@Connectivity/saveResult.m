@@ -1,13 +1,14 @@
 function saveResult(res, outpath, varargin)
 % saveResult Save results produced by runCmapQuery
 
-config = struct('name', {'--save_minimal', '--appenddim'},...
-    'default', {false, true},...
-    'help', {'Save minimal results if true', 'Append dimension to name'});
+config = struct('name', {'--save_minimal', '--appenddim', '--use_gctx'},...
+    'default', {false, true, true},...
+    'help', {'Save minimal results if true', 'Append dimension to name', 'Output as GCTX'});
 opt = struct('prog', mfilename, 'desc', 'Save results produced by runCmapQuery');
 [args, help_flag] = mortar.common.ArgParse.getArgs(config, opt, varargin{:});
 
 mkdirnotexist(outpath);
+gct_writer = ifelse(args.use_gctx, @mkgctx, @mkgct);
 
 % save arguments
 % print_args('query_tool', fullfile(outpath, 'query_tool_params.txt'), res.args);
@@ -27,7 +28,7 @@ end
 for ii=1:length(result_fields)    
     if isfield(res, result_fields{ii}) && isds(res.(result_fields{ii})) && to_save(ii)
         outfile = fullfile(outpath, sprintf('%s.gctx', result_fields{ii}));
-        mkgctx(outfile, res.(result_fields{ii}), 'appenddim', args.appenddim);
+        gct_writer(outfile, res.(result_fields{ii}), 'appenddim', args.appenddim);
     end
 end
 

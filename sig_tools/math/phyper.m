@@ -1,4 +1,4 @@
-function p = phyper(k,w,b,n,varargin)
+function p = phyper(k, w, b, n, varargin)
 % PHYPER Compute the CDF for the hypergeometric distribution.
 % P = PHYPER(k, w, b, n) Computes the probability P[X<=k] from a
 % hypergeometric distribution with parameters (w, b, n). Perhaps the
@@ -9,9 +9,9 @@ function p = phyper(k,w,b,n,varargin)
 % drawn from the urn.
 %
 % P = PHYPER(k, w, b, n, '-logp', false, '-lower_tail', true) 
-%   '-logp' : boolean; if true reports log probabilities
-%   '-lower_tail' : boolean; if true(default) probabilities are P[X<=k],
-%   otherwise, P[X>k]
+%   'logp' : boolean; if true reports negative ln probabilities
+%   'lower_tail' : boolean; if true (default) return the probability P[X<=k],
+%   otherwise return P[X>k]
 %
 % Reference:
 % [1] http://en.wikipedia.org/wiki/Hypergeometric_distribution
@@ -23,7 +23,7 @@ function p = phyper(k,w,b,n,varargin)
 % $Author: Rajiv Narayan [narayan@broadinstitute.org]
 % $Date: Jul.01.2010 12:01:46 EDT
 
-pnames = {'-logp', '-lower_tail'};
+pnames = {'--logp', '--lower_tail'};
 dflts = {false, true};
 arg = parse_args(pnames, dflts, varargin{:});
 
@@ -39,8 +39,8 @@ for ii=1:nk
         st = min(k(ii)+1,n);
         stp = min(n,w);
     end
-    p(ii) = sum(dhyper(st:stp, w, b, n, '-logp', false));
+    p(ii) = sum(dhyper(st:stp, w, b, n, '--logp', false));
     if arg.logp
-        p(ii) = log(p(ii));
+        p(ii) = -log(p(ii));
     end
 end

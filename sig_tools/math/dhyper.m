@@ -1,4 +1,4 @@
-function p = dhyper(k,w,b,n,varargin)
+function p = dhyper(k, w, b, n, varargin)
 % DHYPER Compute density for hypergeometric distribution.
 % P = DHYPER(k, N, m, n) Computes the probability P of obtaining k from a
 % hypergeometric distribution with parameters (w, b, n). Perhaps the
@@ -8,10 +8,8 @@ function p = dhyper(k,w,b,n,varargin)
 % distribution describes the distribution of the number of white balls
 % drawn from the urn.
 %
-% P = PHYPER(k, w, b, n, '-logp', false, '-lower_tail', true) 
-%   '-logp' : boolean; if true reports log probabilities
-%   '-lower_tail' : boolean; if true(default) probabilities are P[X<=k],
-%   otherwise, P[X>k]
+% P = PHYPER(k, w, b, n, 'logp', false, 'lower_tail', true) 
+%   'logp' : boolean; if true reports negative ln probabilities
 %
 % Reference:
 % [1] http://en.wikipedia.org/wiki/Hypergeometric_distribution
@@ -23,7 +21,7 @@ function p = dhyper(k,w,b,n,varargin)
 % $Author: Rajiv Narayan [narayan@broadinstitute.org]
 % $Date: Jul.01.2010 12:01:45 EDT
 
-pnames = {'-logp'};
+pnames = {'--logp'};
 dflts = {false};
 arg = parse_args(pnames, dflts, varargin{:});
 

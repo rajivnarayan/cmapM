@@ -90,6 +90,7 @@ ids = ds_get_meta(ds,'row', args.id_field);
 dup_ids = duplicates(ids);
 has_dup_ids = ~isempty(dup_ids);
 if has_dup_ids && args.enforce_set_size
+    disp(dup_ids)
     error(['ID field %s has %d duplicate entries listed above. ',...
         'Specify enforce_set_size to adjust this constraint'],...
         args.id_field, length(dup_ids));

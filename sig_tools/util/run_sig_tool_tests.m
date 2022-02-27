@@ -31,3 +31,5 @@ test_results = runtests(test_path);
 disp(test_results.table)
  
         
+%%
+runner= matlab.unittest.TestRunner.withTextOutput;

@@ -77,4 +77,19 @@ metrics only the combined scores are saved"
   default: 25000
   help: "Maximum number of columns of the score/rank matrices to read at a time"
 
+-
+  name: --min_set_size
+  default: 3
+  help: "Minimum set size for each geneset after filtering to the feature 
+space of the score matrix"
 
+-
+  name: --max_set_size
+  default: 1e5
+  help: "Maximum set size for each geneset after filtering to the feature 
+space of the score matrix"
+
+-
+  name: --use_gctx
+  default: false
+  help: "Use binary GCTX format optimized for large datasets if true"

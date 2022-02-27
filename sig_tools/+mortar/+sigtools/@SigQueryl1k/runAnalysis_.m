@@ -79,7 +79,7 @@ if ~isempty(ncs_group)
 end
 assert(has_required_fields(sig_meta, req_fn, true), 'Missing metadata fields')
 
-[tf, is_fn] = has_required_fields(sig_meta, num_fn);
+[tf, is_fn] = has_required_fields(sig_meta, req_fn);
 if ~tf
     miss_fn = num_fn(is_fn);
     for ii=1:length(miss_fn)

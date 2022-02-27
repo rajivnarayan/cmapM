@@ -43,22 +43,24 @@ for icol = 1:ncol
         % Permuted size-matched rank and score matrices
         srt_rank = nan(set_size_forperm(ii), args.num_perm);
         srt_wt = nan(set_size_forperm(ii), args.num_perm);
+        this_sort_score = sort(score_ds.mat(:, icol), 'descend');
         for jj=1:args.num_perm
-            % sorted ranks sampled from 1:MAX_RANK
+            % sorted ranks sampled from 1:MAX_RANK                      
             srt_rank(:, jj) = sort(randsample(max_rank, set_size_forperm(ii)));
             % corresponding scores
-            srt_wt(:, jj) = score_ds.mat(srt_rank(:, jj), icol);
+            srt_wt(:, jj) = this_sort_score(srt_rank(:, jj));
         end
         
         % Compute enrichment statistic for nulls
         [es_null, es_running, rank_max, leadf] = ...
             mortar.compute.Connectivity.fastESCore(srt_rank, max_rank, is_weighted, srt_wt);
         % ignore NaNs arising from zero wts
-        es_null = nan_to_val(es_null, 0);
+        es_null = es_null(~isnan(es_null));
         
         % Signed means of the Null ES distribution
         is_pos = es_null > 0;
         is_neg = es_null < 0;
+        % note can be nan if is_pos
         mu_pos = mean(es_null(is_pos));
         mu_neg = mean(es_null(is_neg));
         
@@ -91,5 +93,5 @@ end
 % sort obs matrix by NES of first col
 [srt_val, srt_idx] = sort(nes_obs_ds.mat(:, 1), 'descend');
 nes_obs_ds = ds_order(nes_obs_ds, 'column', srt_idx);
-
+qval_ds = ds_order(qval_ds, 'column', srt_idx);
 end

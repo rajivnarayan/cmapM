@@ -29,7 +29,7 @@ mkdirnotexist(matrix_out)
 mortar.compute.Connectivity.saveResult(res.query_result,...
     matrix_out, 'save_minimal', true, 'appenddim', false);
 gct_writer(fullfile(matrix_out, 'nes.gct'), res.nes_result, 'appenddim', false);
-gct_writer(fullfile(matrix_out, 'fdr_qvalue.gct'), res.fdr_result, 'appenddim', false);
+gct_writer(fullfile(matrix_out, 'fdr_nlog10q.gct'), res.fdr_result, 'appenddim', false);
 
 end
 

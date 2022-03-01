@@ -1,3 +1,7 @@
+## Preamble
+
+This is a fork of [cmap/cmapM](https://github.com/cmap/cmapM/) to experiment with connectivity map analytics.
+
 # cmapM: Connectivity Map Analysis in MATLAB&reg;
 
 Copyright (c) 2017, Connectivity Map (CMap) at the Broad Institute. All rights reserved.

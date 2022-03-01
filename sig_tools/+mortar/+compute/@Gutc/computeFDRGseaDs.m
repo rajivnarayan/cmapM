@@ -7,9 +7,10 @@ qval_mat = ones(nr, nc);
 % FDR adjustments, see computeFDRGsea for details
 apply_null_adjust = true;
 apply_smooth = true;
+log_xform = true;
 
 for ii=1:nc
-    qval_mat(:, ii) = mortar.compute.Gutc.computeFDRGsea(ncs_ds.mat(:, ii), is_null, [], apply_null_adjust, apply_smooth);    
+    qval_mat(:, ii) = mortar.compute.Gutc.computeFDRGsea(ncs_ds.mat(:, ii), is_null, [], apply_null_adjust, apply_smooth, log_xform);    
 end
 qval_ds = mkgctstruct(qval_mat, 'rid', ncs_ds.rid, 'cid', ncs_ds.cid);
 

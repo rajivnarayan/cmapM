@@ -1,4 +1,4 @@
-function [qval, num, denom] = computeFDRGsea(ncs_all, is_null, ncs_q, apply_null_adjust, apply_smooth)
+function [qval, num, denom] = computeFDRGsea(ncs_all, is_null, ncs_q, apply_null_adjust, apply_smooth, log_xform)
 % computeFDRGsea Compute FDR q-values as in the GSEA paper (Sumbramanian A. et al. 2005).
 % [qval, num, denom] = computeFDRGsea(ncs_all, is_null, ncs_q, apply_null_adjust, apply_smooth)
 % ncs_all : 1d vector of normalized connectivity scores
@@ -7,7 +7,7 @@ function [qval, num, denom] = computeFDRGsea(ncs_all, is_null, ncs_q, apply_null
 % apply_null_adjust : linearly interpolate q-values for scores exceeding
 % the null distribution
 % apply_smooth : ensure q-values are monotonic with respect to the NCS scores
-%
+% log_xform: return -log10(q_value) if true
 % Reference: See the Multiple Hypothesis Testing section in
 % Subramanian, A. et al. Gene set enrichment analysis: a knowledge-based
 % approach for interpreting genome-wide expression profiles. Proc. Natl.
@@ -19,6 +19,7 @@ assert(islogical(is_null), 'IS_NULL must be boolean');
 assert(isempty(ncs_q) || mortar.util.Array.is1d(ncs_q), 'ncs_q must be empty or a 1d array');
 assert(isscalar(apply_null_adjust) && islogical(apply_null_adjust), 'APPLYNULL_ADJUST must be a boolean scalar');
 assert(isscalar(apply_null_adjust) && islogical(apply_smooth), 'APPLY_SMOOTH must be a boolean, scalar');
+assert(isscalar(log_xform) && islogical(log_xform), 'LOG_XFORM must be a boolean, scalar');
 
 if isempty(ncs_q)
     ncs_q = ncs_all;
@@ -48,6 +49,10 @@ if nnz(is_neg_trt) && nnz(is_neg_null)>2
     [qval(is_neg_q), num(is_neg_q), denom(is_neg_q)] = fdr_core(ncs_all(is_neg_trt),...
         ncs_all(is_neg_null),...
         ncs_q(is_neg_q), false, apply_null_adjust, apply_smooth);
+end
+
+if (log_xform)
+    qval = -log10(qval + eps);
 end
 
 end

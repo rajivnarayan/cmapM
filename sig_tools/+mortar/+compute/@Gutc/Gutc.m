@@ -92,7 +92,7 @@ classdef Gutc
         [outds, row_meta_orig, col_meta_orig] = castDSToLong(ds, row_field, col_field);
 
         % Compute FDR using the approach in the GSEA paper
-        [qval, num, denom] = computeFDRGsea(ncs_all, is_null, ncs_q, apply_null_adjust, apply_smooth);
+        [qval, num, denom] = computeFDRGsea(ncs_all, is_null, ncs_q, apply_null_adjust, apply_smooth, log_xform);
         % FDR for each column in the dataset
         qval_ds = computeFDRGseaDs(ncs_ds, is_null);
         

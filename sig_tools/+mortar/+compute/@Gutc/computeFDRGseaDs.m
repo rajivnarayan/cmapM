@@ -22,6 +22,9 @@ for ii=1:nr
         mortar.compute.Gutc.computeFDRGsea(ncs_ds.mat(ii, :),...
                            cdf_null_pos, cdf_null_neg,...
                            apply_qval_adjust, apply_smooth, log_xform);
+   if (mod(ii-1, 100) == 0)
+       mortar.util.Message.log(1, '%d/%d Ranklists processed', ii, nr);
+   end
 end
 qval_ds = mkgctstruct(qval_mat, 'rid', ncs_ds.rid, 'cid', ncs_ds.cid);
 pnull_ds = mkgctstruct(pnull_mat, 'rid', ncs_ds.rid, 'cid', ncs_ds.cid);

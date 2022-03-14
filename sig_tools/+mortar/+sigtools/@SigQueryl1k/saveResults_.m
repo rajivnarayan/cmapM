@@ -1,6 +1,7 @@
 function saveResults_(obj, out_path)
 
-required_fields = {'args', 'query_result', 'ncs_result', 'ncs_rpt', 'fdr_result'};
+required_fields = {'args', 'query_result', 'ncs_result', 'ncs_rpt',...
+    'fdr_result', 'pnull_result', 'pobs_result'};
 args = obj.getArgs;
 res = obj.getResults; 
 assert(has_required_fields(res, required_fields), 'Some required fields not found');
@@ -45,7 +46,7 @@ for ii=1:nquery
     this_cs = ds_slice(res.query_result.cs, 'cid', query_id(ii), 'rid', this_ds.rid, 'checkid', false);
     this_ds = ds_add_meta(this_ds, 'row', 'raw_cs', num2cellstr(this_cs.mat, 'precision', 4));
     this_fdr = ds_slice(res.fdr_result, 'cid', query_id(ii), 'rid', this_ds.rid, 'checkid', false);    
-    this_ds = ds_add_meta(this_ds, 'row', 'fdr_q_nlog10', num2cellstr(-log10(this_fdr.mat+eps), 'precision', 4));
+    this_ds = ds_add_meta(this_ds, 'row', 'fdr_q_nlog10', num2cellstr(this_fdr.mat, 'precision', 4));
     [~, srt_idx] = sort(this_ds.mat, 'descend');
     this_ds = ds_slice(this_ds, 'ridx', srt_idx);
     this_out_file = fullfile(this_out, 'query_result.gct');
@@ -62,6 +63,10 @@ function matrix_out = saveMatrices(res, out_path)
 %% save results as matrices
 % cs.gctx: raw connectivity scores
 % ncs.gctx: normalized score
+% pnull.gctx : Nominal p-value (proportion of null scores exceeding an
+% observed score)
+% pobs.gctx : Proportion of all observed scores exceeding an observed
+% score.
 % fdr_qvalue.gctx : FDR qvalues
 
 matrix_out = fullfile(out_path, 'matrices');
@@ -69,6 +74,8 @@ mkdirnotexist(matrix_out)
 mortar.compute.Connectivity.saveResult(res.query_result,...
     fullfile(matrix_out, 'query'), 'save_minimal', true, 'appenddim', false);
 mkgctx(fullfile(matrix_out, 'query', 'ncs.gctx'), res.ncs_result, 'appenddim', false);
+mkgctx(fullfile(matrix_out, 'query', 'pnull.gctx'), res.pnull_result, 'appenddim', false);
+mkgctx(fullfile(matrix_out, 'query', 'pobs.gctx'), res.pobs_result, 'appenddim', false);
 mkgctx(fullfile(matrix_out, 'query', 'fdr_qvalue.gctx'), res.fdr_result, 'appenddim', false);
 
 end

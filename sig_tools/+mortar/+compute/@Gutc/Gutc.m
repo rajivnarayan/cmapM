@@ -92,10 +92,31 @@ classdef Gutc
         [outds, row_meta_orig, col_meta_orig] = castDSToLong(ds, row_field, col_field);
 
         % Compute FDR using the approach in the GSEA paper
-        [qval, num, denom] = computeFDRGsea(ncs_all, is_null, ncs_q, apply_null_adjust, apply_smooth, log_xform);
-        % FDR for each column in the dataset
-        qval_ds = computeFDRGseaDs(ncs_ds, is_null);
+        [qval, numer, denom] = computeFDRGsea(ncs_obs,...
+                                    cdf_null_pos, cdf_null_neg,...
+                                    apply_qval_adjust, apply_smooth,...
+                                    log_xform);
+        % Previous version (deprecated)                        
+        [qval, num, denom] = computeFDRGseaV1(ncs_all, is_null, ncs_q,...
+                                    apply_null_adjust, apply_smooth,...
+                                    log_xform);
         
+        % FDR for each column in the dataset
+        [qval_ds, pnull_ds, pobs_ds] = computeFDRGseaDs(ncs_ds, is_null);
+        
+        % Utils for FDR computation
+        % Linearly scale q-values at the tails of the score distribution 
+        qval = adjustQvalue(qval, ncs, numer, denom, use_right_tail);
+
+        % DEPRECATED, Linearly scale q-values where scores exceed the null distribution.
+        qval = adjustQvalue0(qval, xq, use_right_tail);        
+        % Smooth q-values to be monotonic wrt to ncs
+        qval = smoothFDR(qval, ncs, use_right_tail);        
+        % compute eCDF for specified tail signed scores
+        d = getSignedCDF(ncs, tail);
+        % Lookup quantiles from eCDF
+        q = lookupQuantile(cdf_val, x);
+    
     end % Static methods block
        
 end

@@ -34,14 +34,18 @@ ncs_result = ds_nan_to_val(ncs_result, 0);
 %% Compute Statistical Significance
 Message.log(args.verbose, '# Computing statstical significance w.r.t null signatures');
 is_null_sig = ds_get_meta(ncs_result, 'row', 'is_null_sig')>0;
-fdr_result = mortar.compute.Gutc.computeFDRGseaDs(ncs_result, is_null_sig);
-fdr_result = ds_strip_meta(fdr_result);
+[ds_fdr, ds_pnull, ds_pobs] = mortar.compute.Gutc.computeFDRGseaDs(ncs_result, is_null_sig);
+ds_fdr = ds_strip_meta(ds_fdr);
+ds_pnull = ds_strip_meta(ds_pnull);
+ds_pobs = ds_strip_meta(ds_pobs);
 
 res = struct('args', args,...
     'query_result', query_result,...
     'ncs_result', ncs_result,...
     'ncs_rpt', ncs_rpt,...
-    'fdr_result', fdr_result);
+    'fdr_result', ds_fdr,...
+    'pnull_result', ds_pnull,...
+    'pobs_result', ds_pobs);
 
 end
 

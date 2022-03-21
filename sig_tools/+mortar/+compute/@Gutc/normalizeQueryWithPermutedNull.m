@@ -86,7 +86,8 @@ for icol = 1:ncol
     apply_null_adjust = true;
     apply_smooth = true;
     log_xform = true;
-    [qval, num, denom] = mortar.compute.Gutc.computeFDRGsea(nes_all, is_null, [], apply_null_adjust, apply_smooth, log_xform);
+    % TOFIX: update to new version    
+    [qval, num, denom] = mortar.compute.Gutc.computeFDRGseaV1(nes_all, is_null, [], apply_null_adjust, apply_smooth, log_xform);
     qval_ds.mat(:, icol) = qval(~is_null);
     %fdr_q_nlog10 = -log10(qval(~is_null) + eps);
     %nes_obs_ds = ds_add_meta(nes_obs_ds, 'row', 'fdr_q_nlog10', num2cellstr(fdr_q_nlog10, 'precision', 4));

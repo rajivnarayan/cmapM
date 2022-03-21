@@ -13,6 +13,7 @@ function [qval, num, denom] = computeFDRGseaV1(ncs_all, is_null, ncs_q, apply_nu
 % approach for interpreting genome-wide expression profiles. Proc. Natl.
 % Acad. Sci. U. S. A. 102, 15545?15550 (2005)
 
+warning('gutc:computeFDRGseaV1', 'Using deprecated FDR computation, update to computeFDRGsea');
 assert(mortar.util.Array.is1d(ncs_all), 'NCS_ALL must be a 1d array');
 assert(isequal(size(ncs_all), size(is_null)), 'IS_NULL must have same dimensions of NCS_ALL');
 assert(islogical(is_null), 'IS_NULL must be boolean');
